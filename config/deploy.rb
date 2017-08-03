@@ -1,5 +1,5 @@
 # Change these
-server '35.192.231.24', port: 22, roles: [:web, :app, :db], primary: true
+server '35.194.238.83', port: 22, roles: [:web, :app, :db], primary: true
 
 set :repo_url,        'git@github.com:ttquang1063750/cchai.git'
 set :application,     'cchai'
