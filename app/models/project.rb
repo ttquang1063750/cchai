@@ -10,8 +10,10 @@ class Project < ApplicationRecord
   has_many :session_variables, dependent: :destroy
   has_many :pictures, dependent: :destroy
   has_many :batch_processes, dependent: :destroy
-  has_many :log_changement
+  has_many :log_changements, dependent: :destroy
   has_one :db_connect, dependent: :destroy
+  has_many :site_infos, dependent: :destroy
+  has_many :sites, through: :site_infos
 
 
   extend FriendlyId

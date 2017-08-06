@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
   has_many :roles, dependent: :destroy
   has_many :role_types, through: :roles
+  has_many :sites, dependent: :destroy
+  has_many :site_infos, through: :sites
   has_many :project, -> { distinct }, through: :role_types
   validates_presence_of :name
 

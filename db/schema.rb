@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170629044239) do
+ActiveRecord::Schema.define(version: 20170803040453) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "provider",                             default: "email", null: false
@@ -115,9 +115,9 @@ ActiveRecord::Schema.define(version: 20170629044239) do
 
   create_table "item_masters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
-    t.binary   "layout",     limit: 65535
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.binary   "layout",     limit: 4294967295
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
     t.string   "item_type"
   end
 
@@ -139,10 +139,10 @@ ActiveRecord::Schema.define(version: 20170629044239) do
     t.string   "column_name"
     t.string   "bf_item"
     t.string   "af_item"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
     t.string   "project_name"
     t.string   "page_name"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "operations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -194,11 +194,11 @@ ActiveRecord::Schema.define(version: 20170629044239) do
   end
 
   create_table "raws", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.text     "data",       limit: 65535
     t.integer  "table_id"
     t.integer  "row_id"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
-    t.text     "data",       limit: 65535
     t.index ["row_id"], name: "index_raws_on_row_id", using: :btree
     t.index ["table_id"], name: "index_raws_on_table_id", using: :btree
   end
@@ -240,27 +240,34 @@ ActiveRecord::Schema.define(version: 20170629044239) do
     t.index ["project_id"], name: "index_session_variables_on_project_id", using: :btree
   end
 
+  create_table "site_infos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.string   "number"
+    t.string   "name"
+    t.string   "remarks"
+    t.string   "address"
+    t.string   "tel"
+    t.string   "fax"
+    t.integer  "project_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_site_infos_on_project_id", using: :btree
+  end
+
+  create_table "sites", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+    t.integer  "user_id"
+    t.integer  "site_info_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["site_info_id"], name: "index_sites_on_site_info_id", using: :btree
+    t.index ["user_id"], name: "index_sites_on_user_id", using: :btree
+  end
+
   create_table "tables", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "project_id"
     t.index ["project_id"], name: "index_tables_on_project_id", using: :btree
-  end
-
-  create_table "tasks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name"
-    t.text     "description", limit: 65535
-    t.integer  "project_id"
-    t.date     "deadline"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-    t.index ["project_id"], name: "index_tasks_on_project_id", using: :btree
-  end
-
-  create_table "user_infos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -308,6 +315,8 @@ ActiveRecord::Schema.define(version: 20170629044239) do
   add_foreign_key "roles", "users"
   add_foreign_key "rows", "tables"
   add_foreign_key "session_variables", "projects"
+  add_foreign_key "site_infos", "projects"
+  add_foreign_key "sites", "site_infos"
+  add_foreign_key "sites", "users"
   add_foreign_key "tables", "projects"
-  add_foreign_key "tasks", "projects"
 end

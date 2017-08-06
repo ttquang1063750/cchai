@@ -16,5 +16,9 @@ class Api::V1::Admin::ProjectSerializer < ActiveModel::Serializer
     link(:related) { api_v1_admin_project_db_connects_path(project_id: object.id) }
   end
 
+  has_many :site_infos do
+    link(:related) { api_v1_admin_project_site_infos_path(project_id: object.id) }
+  end
+
   link(:self) { api_v1_admin_project_path(object.id) }
 end

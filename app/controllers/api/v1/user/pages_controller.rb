@@ -4,6 +4,7 @@ class Api::V1::User::PagesController < ApplicationController
   before_action :get_project_by_params, only: [:show, :create_or_update, :delete]
   before_action :get_page_by_params, only: [:show, :create_or_update, :delete]
   before_action :get_table_by_params, only: [:show]
+  before_action :get_site_by_current_user, only: [:show]
   before_action :get_role_type_by_params, only: [:show, :create_or_update, :delete]
   before_action :get_operation_page_table_by_params, only: [:show_operation, :create_csv_export]
   before_action :check_sort_condition, :pagination, only: [:show_operation]
@@ -25,7 +26,11 @@ class Api::V1::User::PagesController < ApplicationController
               session_variables: get_session_variables,
               user_email: current_user.email,
               role_types: @role_types,
-              role_names: @role_names
+              role_names: @role_names,
+              site: {
+                number: @site[:number],
+                name: @site[:name]
+              }
             } 
           }
   end
@@ -164,6 +169,15 @@ class Api::V1::User::PagesController < ApplicationController
   def get_table_by_params
     @tables_data = []
     Table.using(@database.database.to_sym).where(project_id: params[:project_id]).each { |e| @tables_data << { id: e.id, name: e.name } }
+  end  
+
+  def get_site_by_current_user
+    @site = {}
+    user = Site.find_by(user_id: current_user.id)
+    unless user.nil? 
+      @site[:number] = user.site_info.number
+      @site[:name] = user.site_info.name
+    end    
   end  
 
   def get_role_type_by_params

@@ -5,7 +5,7 @@ class Api::V1::Admin::ProjectsController < Api::V1::AdminController
 
   def show
     authorize! :write, @project
-    render json: @project, include: 'role_types'
+    render json: @project, include: ['role_types', 'site_infos']
   end
 
   def index

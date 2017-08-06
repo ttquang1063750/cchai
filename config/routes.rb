@@ -25,6 +25,7 @@ Rails.application.routes.draw do
             resources :roles, only: [:create, :destroy, :index, :show] do
               post :create_multiple, on: :collection
             end
+            resources :sites, only: [:create, :destroy, :index, :show]
             resources :pages, only: [:index, :create, :update, :show, :destroy] do
               resources :operations
               resources :local_variables do
@@ -38,6 +39,11 @@ Rails.application.routes.draw do
               end
               collection do
                 post 'creates', to: 'role_types#creates'
+              end
+            end
+            resources :site_infos, only: [:index, :create, :update, :show, :destroy] do
+              member do
+                get :users, to: 'site_infos#users'
               end
             end
             resources :tables do
@@ -58,7 +64,6 @@ Rails.application.routes.draw do
           end  
           
           resources :clients
-          resources :tasks
           resources :item_masters do
             collection do
               get :search

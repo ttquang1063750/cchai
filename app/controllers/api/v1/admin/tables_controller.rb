@@ -35,7 +35,7 @@ class Api::V1::Admin::TablesController < Api::V1::AdminController
   end
 
   def update
-    if @table.name != 'table_count' || @check_table == false
+    if @check_table == false
       Table.transaction do
         origin_table_name = @table.name
         @table.assign_attributes(table_params)
@@ -55,7 +55,7 @@ class Api::V1::Admin::TablesController < Api::V1::AdminController
   end
 
   def destroy
-    if @table.name != 'table_count' || @check_table == false
+    if @check_table == false
       cells = []
       Octopus.using(@database.database.to_sym) do
         @columns_count.each do |e|
@@ -143,14 +143,16 @@ class Api::V1::Admin::TablesController < Api::V1::AdminController
   end
 
   def set_check_table
-    @check_table = false
-    @operation = Operation.all
-    @operation.each do |e|
-      if e.stage == 'init' && e.ds_name == @table.name
-        @check_table = true
-      elsif e.stage == 'join'
-        query = Oj.load(e.query).with_indifferent_access
-        query[:rules].each { |e| @check_table = true if e[:sourceTable] == @table.name || e[:targetTable] == @table.name }
+    @table.name == 'table_count' ? @check_table = true : @check_table = false
+    @project.pages.map(&:operations).flatten.each do |e|
+      case e.stage
+      when 'init' 
+        @check_table = true if e.ds_name == @table.name && e.page.project_id == @table.project_id
+      when 'join'
+        if e.page.project_id == @table.project_id
+          query = Oj.load(e.query).with_indifferent_access
+          query[:rules].each { |r| @check_table = true if r[:sourceTable] == @table.name || r[:targetTable] == @table.name }
+        end
       end   
     end  
   end  
