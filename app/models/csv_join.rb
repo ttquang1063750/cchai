@@ -1,0 +1,2 @@
+class CsvJoin < ApplicationRecord
+end
