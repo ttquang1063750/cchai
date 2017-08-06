@@ -4,6 +4,7 @@ require 'capistrano/deploy'
 
 
 # require 'capistrano/rails'
+require 'capistrano/rails/collection'
 require 'capistrano/bundler'
 require 'capistrano/rails/migrations'
 require 'capistrano/rbenv'
