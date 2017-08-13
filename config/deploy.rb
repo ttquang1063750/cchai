@@ -5,7 +5,7 @@ set :repo_url,        'git@github.com:ttquang1063750/cchai.git'
 set :application,     'cchai'
 set :user,            'ttquang1063750'
 set :puma_threads,    [4, 16]
-set :puma_workers,    0
+set :puma_workers,    4
 
 # Don't change these unless you know what you're doing
 set :pty,             true
